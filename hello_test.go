@@ -2,8 +2,8 @@ package main
 
 import "testing"
 
-func AssertErrorMessage(got string, want string, t *testing.T) {
-	t.Helper()
+func AssertErrorMessage(got, want string, t *testing.T) {
+	t.Helper() // for telling this is a helper so line number will be better while failing
 	if got != want {
 		t.Errorf("We got %q but wanted %q", got, want)
 	}
@@ -12,18 +12,34 @@ func TestHello(t *testing.T) {
 
 	// one scenario
 	t.Run("saying Hello to people", func(t *testing.T) {
-		got := Hello("Udit")
-		want := "Hello, Udits"
+		got := Hello("Udit", "English")
+		want := "Hello, Udit"
 
 		AssertErrorMessage(got, want, t)
 	})
 
 	// 2nd scenario
 	t.Run("saying Hello, world if empty string passed", func(t *testing.T) {
-		got := Hello("")
+		got := Hello("", "")
 		want := "Hello, World"
 
 		AssertErrorMessage(got, want, t)
+	})
+
+	// spanish hola
+	t.Run("in Spanish", func(t *testing.T) {
+		got := Hello("Elodie", "Spanish")
+		want := "Hola, Elodie"
+		AssertErrorMessage(got, want, t)
+	})
+
+	// french bonjur
+	t.Run("in French", func(t *testing.T) {
+		got := Hello("Udit", "French")
+		want := "Bonjur, " + "Udit"
+
+		AssertErrorMessage(got, want, t)
+
 	})
 }
 
