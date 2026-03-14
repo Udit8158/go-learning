@@ -1,4 +1,4 @@
-package main
+package hello
 
 import (
 	"fmt"
@@ -8,7 +8,6 @@ const (
 	spanishHelloPrefix = "Hola"
 	englishHelloPrefix = "Hello"
 	frenchHellowPrefix = "Bonjur"
-
 )
 
 func Hello(name, language string) string {
@@ -22,23 +21,22 @@ func Hello(name, language string) string {
 func greetingPrefix(language string) (prefix string) {
 	switch language {
 	default:
-		prefix =  englishHelloPrefix + ", "
+		prefix = englishHelloPrefix + ", "
 
 	case "Spanish":
-		prefix =  spanishHelloPrefix + ", " 
-	
+		prefix = spanishHelloPrefix + ", "
+
 	case "French":
-		prefix =  frenchHellowPrefix + ", "
+		prefix = frenchHellowPrefix + ", "
 
 	}
 
-	return 
+	return
 }
 
 func Greet(name string) string {
 	return "Hello, " + name
 }
-
 
 func main() {
 	fmt.Println("We can do this too") // we don't need fmt import
