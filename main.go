@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	custom_append "github.com/Udit8158/go-learning/custom_append"
+	custom_append "github.com/Udit8158/go-learning/05_custom_append"
 )
 
 func Change(arr []int) {
