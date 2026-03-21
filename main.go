@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"time"
+
+	countdown "github.com/Udit8158/go-learning/11_countdown"
 )
 
 func Change(arr []int) {
@@ -19,6 +23,12 @@ func (f *F) nameChange(newName string) {
 	fmt.Printf("Memory address of f Type F in nameChange method %p\n", f)
 	fmt.Println((*f))
 	f.name = newName
+}
+
+type RealSleeper struct{}
+
+func (rs *RealSleeper) Sleep() {
+	time.Sleep(time.Duration(1) * time.Second)
 }
 
 func main() {
@@ -49,14 +59,20 @@ func main() {
 	// fmt.Println(cap(s)) // capacity -> 10
 	// fmt.Println(s)
 
-	var friend F
-	fmt.Printf("Memory address of friend %p\n", &friend)
+	// var friend F
+	// fmt.Printf("Memory address of friend %p\n", &friend)
 
-	fmt.Printf("%v\n", friend)
-	friend.name = "i"
-	friend.email = "k"
-	fmt.Printf("%#v\n", friend)
+	// fmt.Printf("%v\n", friend)
+	// friend.name = "i"
+	// friend.email = "k"
+	// fmt.Printf("%#v\n", friend)
 
-	friend.nameChange("udit")
-	fmt.Printf("%#v\n", friend)
+	// friend.nameChange("udit")
+	// fmt.Printf("%#v\n", friend)
+	//
+	// dependencyinjetion.Greet(os.Stdout, "Udit")
+	// os.Stdout.WriteString("hi there\n")
+
+	var sleeper RealSleeper
+	countdown.Countdown(os.Stdout, &sleeper)
 }
