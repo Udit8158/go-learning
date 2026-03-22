@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"net/http"
 	"time"
 
-	countdown "github.com/Udit8158/go-learning/11_countdown"
+	concurrency "github.com/Udit8158/go-learning/12_concurrency"
 )
 
 func Change(arr []int) {
@@ -30,7 +30,23 @@ type RealSleeper struct{}
 func (rs *RealSleeper) Sleep() {
 	time.Sleep(time.Duration(1) * time.Second)
 }
+func checkUrl(url string) bool {
+	res, err := http.Get(url)
 
+	// http error occured
+	if err != nil {
+		fmt.Printf("HTTP ERROR - %v\n", err)
+		return false
+	}
+
+	// getting the 200 ok response - so url exists
+	// if res.StatusCode == http.StatusOK {
+	// 	return true
+	// }
+
+	// fmt.Println("Not 200ok - status code,", res.StatusCode, url)
+	return res.StatusCode < 500
+}
 func main() {
 
 	// s := []int{1, 2, 3, 4, 5} // this a way to define a slice
@@ -73,6 +89,90 @@ func main() {
 	// dependencyinjetion.Greet(os.Stdout, "Udit")
 	// os.Stdout.WriteString("hi there\n")
 
-	var sleeper RealSleeper
-	countdown.Countdown(os.Stdout, &sleeper)
+	// var sleeper RealSleeper
+	// countdown.Countdown(os.Stdout, &sleeper)
+
+	// websites := []string {
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"hello",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// 	"https://google.com",
+	// }
+	urlData := concurrency.CheckWebsites(checkUrl, []string{"hello", "https://google.com", "https://notion.so", "https://google.com",
+		"https://github.com",
+		"https://golang.org",
+		"https://go.dev",
+		"https://stackoverflow.com",
+		"https://openai.com",
+		"https://wikipedia.org",
+		"https://amazon.com",
+		"https://microsoft.com",
+		"https://apple.com"})
+	fmt.Printf("URL DATA %#v\n", urlData)
 }
