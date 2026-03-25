@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
-	concurrency "github.com/Udit8158/go-learning/12_concurrency"
 )
 
 func Change(arr []int) {
@@ -46,6 +44,10 @@ func checkUrl(url string) bool {
 
 	// fmt.Println("Not 200ok - status code,", res.StatusCode, url)
 	return res.StatusCode < 500
+}
+
+func process(any) {
+
 }
 func main() {
 
@@ -164,15 +166,27 @@ func main() {
 	// 	"https://google.com",
 	// 	"https://google.com",
 	// }
-	urlData := concurrency.CheckWebsites(checkUrl, []string{"hello", "https://google.com", "https://notion.so", "https://google.com",
-		"https://github.com",
-		"https://golang.org",
-		"https://go.dev",
-		"https://stackoverflow.com",
-		"https://openai.com",
-		"https://wikipedia.org",
-		"https://amazon.com",
-		"https://microsoft.com",
-		"https://apple.com"})
-	fmt.Printf("URL DATA %#v\n", urlData)
+	// urlData := concurrency.CheckWebsites(checkUrl, []string{"hello", "https://google.com", "https://notion.so", "https://google.com",
+	// 	"https://github.com",
+	// 	"https://golang.org",
+	// 	"https://go.dev",
+	// 	"https://stackoverflow.com",
+	// 	"https://openai.com",
+	// 	"https://wikipedia.org",
+	// 	"https://amazon.com",
+	// 	"https://microsoft.com",
+	// 	"https://apple.com"})
+	// fmt.Printf("URL DATA %#v\n", urlData)
+
+	type Vector struct {
+		x, y, z int
+	}
+	// Case 1 — stays on stack (compiler sees it doesn't escape)
+	v := Vector{1, 2, 3}
+	// process(v) // passed by value, v never leaves this scope
+
+	// Case 2 — escapes to heap (pointer leaves the scope)
+	// v := Vector{1, 2, 3}
+	p := &v
+	process(p) // now v's address is passed out, compiler moves v to heap
 }
