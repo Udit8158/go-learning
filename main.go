@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"reflect"
 	"time"
 )
 
@@ -94,99 +95,75 @@ func main() {
 	// var sleeper RealSleeper
 	// countdown.Countdown(os.Stdout, &sleeper)
 
-	// websites := []string {
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"hello",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// 	"https://google.com",
-	// }
-	// urlData := concurrency.CheckWebsites(checkUrl, []string{"hello", "https://google.com", "https://notion.so", "https://google.com",
-	// 	"https://github.com",
-	// 	"https://golang.org",
-	// 	"https://go.dev",
-	// 	"https://stackoverflow.com",
-	// 	"https://openai.com",
-	// 	"https://wikipedia.org",
-	// 	"https://amazon.com",
-	// 	"https://microsoft.com",
-	// 	"https://apple.com"})
-	// fmt.Printf("URL DATA %#v\n", urlData)
-
 	type Vector struct {
 		x, y, z int
 	}
 	// Case 1 — stays on stack (compiler sees it doesn't escape)
-	v := Vector{1, 2, 3}
+	vs := Vector{1, 2, 3}
 	// process(v) // passed by value, v never leaves this scope
 
 	// Case 2 — escapes to heap (pointer leaves the scope)
 	// v := Vector{1, 2, 3}
-	p := &v
+	p := &vs
 	process(p) // now v's address is passed out, compiler moves v to heap
+
+	type T struct {
+		A int
+		B string
+	}
+	t := T{23, "skidoo"}
+	s := reflect.ValueOf(&t).Elem()
+	typeOfT := s.Type()
+	fmt.Println(typeOfT, s, s.CanSet())
+	// for i := 0; i < s.NumField(); i++ {
+	// 	f := s.Field(i)
+	// 	fmt.Printf("%d: %s %s = %v\n", i,
+	// 		typeOfT.Field(i).Name, f.Type(), f.Interface())
+	// }
+
 }
+
+// tcp connection
+// func main() {
+// 	// Start listening on port 8080
+// 	listener, err := net.Listen("tcp", ":8080")
+// 	if err != nil {
+// 		fmt.Println("Error starting server:", err)
+// 		return
+// 	}
+// 	defer listener.Close()
+
+// 	fmt.Println("Server listening on port 8080...")
+
+// 	for {
+// 		// Block here until a client connects
+// 		conn, err := listener.Accept()
+// 		if err != nil {
+// 			fmt.Println("Error accepting connection:", err)
+// 			continue
+// 		}
+
+// 		fmt.Println("Client connected:", conn.RemoteAddr())
+
+// 		// Handle the connection
+// 		handleConnection(conn)
+// 	}
+// }
+
+// func handleConnection(conn net.Conn) {
+// 	defer conn.Close()
+
+// 	// Read what the client sent
+// 	buf := make([]byte, 1024)
+// 	n, err := conn.Read(buf)
+// 	if err != nil {
+// 		fmt.Println("Error reading:", err)
+// 		return
+// 	}
+
+// 	message := string(buf[:n])
+// 	fmt.Println("Received:", message)
+
+// 	// Write a response back
+// 	conn.Write([]byte("Hello from server!\n"))
+// }
