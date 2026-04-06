@@ -3,6 +3,7 @@ package clockface_test
 import (
 	"bytes"
 	"encoding/xml"
+	"math"
 	"testing"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 )
 
 // SVG structure - for parsing the svg into this struct
+// https://xml-to-go.github.io/ used this
 type SVG struct {
 	XMLName xml.Name `xml:"svg"`
 	Text    string   `xml:",chardata"`
@@ -64,8 +66,37 @@ func TestSvgAtMidnight(t *testing.T) {
 
 }
 
+func TestSvgAt114834(t *testing.T) {
+	buf := bytes.Buffer{}
+	tm := time.Date(1337, time.January, 1, 11, 48, 34, 0, time.UTC)
+	clockface.DrawClockFace(tm, &buf)
+
+	var output SVG
+	xml.Unmarshal(buf.Bytes(), &output)
+
+	wantedLines := []Line{
+		{X1: 150, Y1: 150, X2: 125.000000, Y2: 106.698730}, // hour
+		{X1: 150, Y1: 150, X2: 73.915478, Y2: 125.278640},  // minute
+		{X1: 150, Y1: 150, X2: 113.393702, Y2: 232.219091}, // second
+	}
+
+	if len(output.Lines) != 3 {
+		t.Fatal("All lines of has not been drawn!")
+	}
+
+	for i := range output.Lines {
+		assertLine(t, output.Lines[i], wantedLines[i])
+	}
+}
+
 func assertLine(t *testing.T, outputLine Line, exptectedLine Line) {
-	if outputLine.X1 != exptectedLine.X1 || outputLine.X2 != exptectedLine.X2 || outputLine.Y1 != exptectedLine.Y1 || outputLine.Y2 != exptectedLine.Y2 {
+	// if outputLine.X1 != exptectedLine.X1 || outputLine.X2 != exptectedLine.X2 || outputLine.Y1 != exptectedLine.Y1 || outputLine.Y2 != exptectedLine.Y2 {
+	// 	t.Helper()
+	// 	t.Errorf("not matched expected %v   got %v", exptectedLine, outputLine)
+	// }
+	tollerance := 1e-4
+
+	if math.Abs(outputLine.X1-exptectedLine.X1) > tollerance || math.Abs(outputLine.X2-exptectedLine.X2) > tollerance || math.Abs(outputLine.Y1-exptectedLine.Y1) > tollerance || math.Abs(outputLine.Y2-exptectedLine.Y2) > tollerance {
 		t.Helper()
 		t.Errorf("not matched expected %v   got %v", exptectedLine, outputLine)
 	}
