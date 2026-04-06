@@ -13,6 +13,8 @@ import (
 	clockface "github.com/Udit8158/go-learning/18_using_maths"
 )
 
+// not getting total accuracy while dealing with floats
+// so accepting this minor fault tollerance
 const tollerance = 1e-7
 
 func TestSecondHand(t *testing.T) {
@@ -120,6 +122,7 @@ func TestHourHand(t *testing.T) {
 			time: time.Date(1337, time.January, 1, 9, 0, 0, 0, time.UTC),
 			want: clockface.Point{X: 100, Y: 150},
 		},
+		// not implemented this behaviour for min and hour hand yet
 		// {
 		// 	name: "at half past three sits halfway between three and four",
 		// 	time: time.Date(1337, time.January, 1, 3, 30, 0, 0, time.UTC),

@@ -1,6 +1,8 @@
 package clockface
 
 import (
+	"fmt"
+	"io"
 	"math"
 	"time"
 )
@@ -19,7 +21,25 @@ const (
 	ClockCenterY     = 150.0
 )
 
-// for each sec we are rotating by 6 deg
+// function to draw the clockface in a buffer/output
+func DrawClockFace(tm time.Time, w io.Writer) {
+	shPoint := SecondHand(tm)
+	mhPoint := MinuteHand(tm)
+	hhPoint := HourHand(tm)
+
+	// writting the svg in the io writer
+	// can be used by buffer (in test) and stdout (in main)
+	fmt.Fprint(w, svgStart)
+	fmt.Fprint(w, bezel)
+
+	fmt.Fprint(w, hourHandTag(hhPoint))
+	fmt.Fprint(w, minuteHandTag(mhPoint))
+	fmt.Fprint(w, secondHandTag(shPoint))
+
+	fmt.Fprint(w, svgEnd)
+}
+
+// end point for second hand (x2,y2)
 func SecondHand(tm time.Time) Point {
 	// extract the second from the time
 	second := tm.Second()
@@ -34,6 +54,7 @@ func SecondHand(tm time.Time) Point {
 	return Point{x2, y2}
 }
 
+// end point for min hand (x2,y2)
 func MinuteHand(tm time.Time) Point {
 	minute := tm.Minute()
 
@@ -45,6 +66,7 @@ func MinuteHand(tm time.Time) Point {
 	return Point{x2, y2}
 }
 
+// end point for hour hand (x2,y2)
 func HourHand(tm time.Time) Point {
 	hr := tm.Hour()
 
@@ -68,3 +90,29 @@ func MinutesInRadians(min int) float64 {
 func HoursInRadians(hr int) float64 {
 	return (float64(hr) / 12.0) * (2 * math.Pi)
 }
+
+// utility functions for drawing hands into the svg
+func secondHandTag(p Point) string {
+	return fmt.Sprintf(`<line x1="150" y1="150" x2="%f" y2="%f" style="fill:none;stroke:#f00;stroke-width:3px;"/>`, p.X, p.Y)
+}
+
+func minuteHandTag(p Point) string {
+	return fmt.Sprintf(`<line x1="150" y1="150" x2="%f" y2="%f" style="fill:none;stroke:#3443eb;stroke-width:3px;"/>`, p.X, p.Y)
+}
+
+func hourHandTag(p Point) string {
+	return fmt.Sprintf(`<line x1="150" y1="150" x2="%f" y2="%f" style="fill:none;stroke:#141414;stroke-width:3px;"/>`, p.X, p.Y)
+}
+
+// svg specific constants
+const svgStart = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="100%"
+     height="100%"
+     viewBox="0 0 300 300"
+     version="2.0">`
+
+const bezel = `<circle cx="150" cy="150" r="100" style="fill:#fff;stroke:#000;stroke-width:5px;"/>`
+
+const svgEnd = `</svg>`
