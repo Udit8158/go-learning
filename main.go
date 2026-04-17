@@ -2,54 +2,20 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
-type NumChan struct {
-	index int
-	value int
-}
-
-// non concurrent
-func multipliedBy1000(s []int) {
-	for i := range s {
-		// main work
-		time.Sleep(10 * time.Millisecond)
-		s[i] = s[i] * 1000
-	}
-}
-
-// concurrent
-func multipliedBy1000Eff(s []int, c chan NumChan) {
-	for i := range s {
-
-		go func(i int) {
-			// main work
-			time.Sleep(10 * time.Millisecond)
-			c <- NumChan{index: i, value: s[i] * 1000}
-		}(i)
-	}
-}
-
 func main() {
+	// Set up channel on which to send signal notifications.
+	// We must use a buffered channel or risk missing the signal
+	// if we're not ready to receive when the signal is sent.
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGINT)
+	fmt.Println("Running..")
 
-	startTime := time.Now()
-	// create the big array
-	numbers := make([]int, 100)
-	numberch := make(chan NumChan)
-	for i := range numbers {
-		numbers[i] = i
-	}
-
-	multipliedBy1000Eff(numbers, numberch)
-	// multipliedBy1000(numbers)
-
-	for range numbers {
-		r := <-numberch
-		numbers[r.index] = r.value
-	}
-
-	fmt.Println(numbers[0:10])
-	fmt.Println(time.Since(startTime))
-
+	// Block until a signal is received.
+	s := <-c
+	fmt.Println("Got signal:", s)
 }
